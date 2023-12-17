@@ -1,24 +1,29 @@
 package modelo;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "apresentacao")
 public class Apresentacao {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	private String data;
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE},
-			fetch=FetchType.LAZY)
-	private Artista artista;
-	private Cidade cidade;
-	@ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE},
-			fetch=FetchType.LAZY)
-	private int precoIngresso;
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private int id;
+	    private String data;
+	    
+	    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	    private Artista artista;
+	    
+	    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+	    private Cidade cidade;
+	    
+	    private int precoIngresso;
 	
 	public Apresentacao(int id, String data , Artista artista, Cidade cidade, int precoIngresso) {
 		this.id = id;
