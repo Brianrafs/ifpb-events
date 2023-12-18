@@ -139,12 +139,12 @@ public class TelaConsulta {
 						break;
 					case 1: 
 						String nome = JOptionPane.showInputDialog("digite a cidade");
-						List<Artista> resultado2 = Fachada.apresentacaoCidade(nome);
+						List<Artista> resultado2 = Fachada.artistasNaCidade(nome);
 						listagemArtista(resultado2);
 						break;
 					case 2:
-						List<Artista> resultado3 = Fachada.ListarMaiorApresentacao();
-						listagemArtista(resultado3);
+						Artista resultado3 = Fachada.ListarMaiorApresentacao();
+						listagemArtista((List<Artista>) resultado3);
 						break;
 
 					}
@@ -187,7 +187,7 @@ public class TelaConsulta {
 		}
 	}
 
-	public void listagemArtista(List<Artista> lista) {
+	public void listagemArtista(List<Artista> resultado2) {
 		try{
 			// o model armazena todas as linhas e colunas do table
 			DefaultTableModel model = new DefaultTableModel();
@@ -196,13 +196,13 @@ public class TelaConsulta {
 			model.addColumn("nome");
 
 			//adicionar linhas no model
-			for(Artista a : lista) {
+			for(Artista a : resultado2) {
 				model.addRow(new Object[]{a.getNome()});
 			}
 			//atualizar model no table (visualizacao)
 			table.setModel(model);
 
-			label_4.setText("resultados: "+lista.size()+ " objetos");
+			label_4.setText("resultados: "+resultado2.size()+ " objetos");
 		}
 		catch(Exception erro){
 			label.setText(erro.getMessage());

@@ -139,13 +139,12 @@ public class TelaApresentacao {
 						label.setText("campo vazio");
 						return;
 					}
-					int id = 0;
 					String data = textField.getText();
 					String artista = textField_3.getText();
 					String cidade = textField_2.getText();
 					int precoIngresso = Integer.parseInt(textField_4.getText());
 
-					Fachada.cadastrarApresentacao(id,data,artista,cidade,precoIngresso);
+					Fachada.cadastrarApresentacao(data,artista,cidade,precoIngresso);
 					label.setText("Apresentação Criada");
 					listagem();
 				}

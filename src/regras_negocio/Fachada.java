@@ -7,6 +7,8 @@ import daojpa.DAOArtista;
 import daojpa.DAOCidade;
 import daojpa.DAOApresentacao;
 import daojpa.DAOUsuario;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import modelo.Artista;
 import modelo.Cidade;
 import modelo.Apresentacao;
@@ -33,7 +35,7 @@ public class Fachada {
 		DAO.begin();
 		Artista artista = daoartista.read(nome);
 		if (artista!=null)
-			throw new Exception("Artista já cadastrado:" + nome);
+			throw new Exception("Artista já cadastrado: " + nome);
 		artista = new Artista(nome);
 
 		daoartista.create(artista);
@@ -41,27 +43,26 @@ public class Fachada {
 		return artista;
 	}
 
-	public static Apresentacao cadastrarApresentacao(int id, String data, String artista, String cidade, int precoIngresso) throws Exception{
+	public static Apresentacao cadastrarApresentacao( String data, String artista, String cidade, int precoIngresso) throws Exception{
 		DAO.begin();
-		Artista art =  daoartista.read(artista);
-			if(art==null)
-				throw new Exception ("Artista "+ artista + "não existe");
+		
+			Artista art =  daoartista.read(artista);
+				if(art==null)
+					throw new Exception ("Artista "+ artista + "não existe");
+				
 
-		Apresentacao ap = daoapresentacao.read(id);
-			if(ap!=null)
-				throw new Exception("Apresentacao ja cadastrada para o artista" + artista);
+			Cidade cid = daocidade.read(cidade);
+				if(cid==null)
+					throw new Exception("Cidade " + cidade + "nao existe");
 
-		Cidade cid = daocidade.read(cidade);
-			if(cid==null)
-				throw new Exception("Cidade " + cidade + "nao existe");
-
-		Apresentacao apresentacao =  new Apresentacao(id,data,art,cid,precoIngresso);
-		art.adicionar(apresentacao);
-		daoapresentacao.create(apresentacao);
-		daoartista.update(art);
-		DAO.commit();
-		return apresentacao;
+			Apresentacao apresentacao =  new Apresentacao(data,art,cid,precoIngresso);
+			art.adicionar(apresentacao);
+			daoapresentacao.create(apresentacao);
+			daoartista.update(art);
+			DAO.commit();
+			return apresentacao;
 	}
+
 
 	public static Cidade cadastrarCidade(String nome) throws Exception{
 
@@ -70,7 +71,7 @@ public class Fachada {
 		Cidade cidade = daocidade.read(nome);
 
 		if(cidade!=null)
-			throw new Exception("A cidade" + nome + "ja está cadastrada");
+			throw new Exception("A cidade " + nome + " ja está cadastrada");
 
 		Cidade cid = new Cidade(nome);
 		daocidade.create(cid);
@@ -98,12 +99,12 @@ public class Fachada {
 		DAO.begin();
 		Apresentacao ap = daoapresentacao.read(id);
 
-		if(ap==null)
-			throw new Exception("Id:" + id + "incorreto para exclusão da apresentacao");
-
-		//apagar apresentacao
+		if(ap!=null) {
 		daoapresentacao.delete(ap);
 		DAO.commit();
+		} else {
+			throw new Exception("Id: " + id + " incorreto para exclusão da apresentacao");
+		}
 	}
 
 	public static void excluirCidade(String nome) throws Exception{
@@ -111,7 +112,7 @@ public class Fachada {
 		Cidade cid = daocidade.read(nome);
 
 		if(cid==null)
-			throw new Exception( cid + "incorreta para exclusão");
+			throw new Exception( cid + " incorreta para exclusão");
 
 		List<Apresentacao> apresentacoes = daoapresentacao.readAll();
 
@@ -131,7 +132,7 @@ public class Fachada {
 		Apresentacao ap = daoapresentacao.read(id);
 
 		if(ap==null){
-			throw new Exception("Id: " + id + "invalido");
+			throw new Exception("Id: " + id + " invalido");
 		}
 
 		ap.setPrecoIngresso(precoIngresso);
@@ -173,16 +174,17 @@ public class Fachada {
 		return resultados;
 	}
 
-	public static List<Artista> ListarMaiorApresentacao(){	
-		DAO.begin();
-		List<Artista> resultados =  daoartista.ListarMaiorApresentacao();
-		DAO.commit();
-		return resultados;
+	public static Artista ListarMaiorApresentacao(){    
+	    DAO.begin();
+	    Artista resultados = daoartista.listarMaiorApresentacao();
+	    DAO.commit();
+	    return resultados;
 	}
 
-	public static List<Artista>  apresentacaoCidade(String n){
+
+	public static List<Artista>  artistasNaCidade(String n){
 		DAO.begin();
-		List<Artista> resultados =  daoartista.Apresentacaocidade(n);
+		List<Artista> resultados =  daoartista.artistasNaCidade(n);
 		DAO.commit();
 		return resultados;
 	}

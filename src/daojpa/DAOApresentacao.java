@@ -10,14 +10,15 @@ import java.util.List;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import modelo.Apresentacao;
+import modelo.Artista;
 
 public class DAOApresentacao  extends DAO<Apresentacao>{
 
 	public Apresentacao read (Object chave){
 		try{
 			int id = (int) chave;
-			TypedQuery<Apresentacao> q = manager.createQuery("select a from Apresentacao a where a.id = :n ",Apresentacao.class);
-			q.setParameter("n", id);
+			TypedQuery<Apresentacao> q = manager.createQuery("select a from Apresentacao a where a.id = :id ",Apresentacao.class);
+			q.setParameter("id", id);
 
 			return q.getSingleResult();
 		}catch(NoResultException e){
@@ -35,17 +36,14 @@ public class DAOApresentacao  extends DAO<Apresentacao>{
 	//  consultas
 	//--------------------------------------------
 
-	public List<Apresentacao> Listarapresentacoes(String modelo){
-		TypedQuery<Apresentacao> q = manager.createQuery("select a from Apresentacao a where a.cidade.modelo = :x", Apresentacao.class);
-		q.setParameter("x", modelo);
-		
-		return  q.getResultList();
+	public List<Apresentacao> Listarapresentacoes(String data) {
+	    TypedQuery<Apresentacao> query = manager.createQuery(
+	        "SELECT a FROM Apresentacao a LEFT JOIN FETCH a.artista LEFT JOIN FETCH a.cidade WHERE a.data = :data",
+	        Apresentacao.class
+	    );
+	    query.setParameter("data", data);
+	    
+	    return query.getResultList();
 	}
 
-	
-	public List<Apresentacao> ListarMaiorApresentacao(){
-		TypedQuery<Apresentacao> q = manager.createQuery("select a from Apresentacao a where a.finalizado = true", Apresentacao.class);
-		
-		return  q.getResultList();
-	}
 }

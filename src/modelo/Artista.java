@@ -1,29 +1,36 @@
 package modelo;
-import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
-
+@Entity
+@Table(name = "artista")
 public class Artista {
 		@Id
 		private String nome;
-		@OneToMany(mappedBy = "artista", cascade={CascadeType.PERSIST, CascadeType.MERGE},
-				fetch = FetchType.LAZY)
-		private ArrayList<Apresentacao> apresentacoes = new ArrayList<>();
-		public Artista(String nome, ArrayList<Apresentacao> apresentacoes) {
-			this.nome = nome;
-			this.apresentacoes = apresentacoes;
+		@OneToMany(mappedBy = "artista", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+		private List<Apresentacao> apresentacoes;
+		
+		public Artista() {
 		}
+		
+		//public Artista(String nome, List<Apresentacao> apresentacoes) {
+		//	this.nome = nome;
+		//	this.apresentacoes = apresentacoes;
+		//}
+		
 		public Artista(String nome) {
 			this.nome = nome;
 		}
 
 		public void adicionar(Apresentacao a){
-			a.setArtista(this);
-			this.apresentacoes.add(a);
+			apresentacoes.add(a);
+		    a.setArtista(this);
 		}
 		public void remover(Apresentacao a){
 			a.setArtista(null);
@@ -36,13 +43,13 @@ public class Artista {
 			return null;
 		}
 		
-		public ArrayList<Apresentacao> getApresentacoes() {
-			return apresentacoes;
-		}
-		
-		public void setApresentacoes(ArrayList<Apresentacao> apresentacoes) {
-			this.apresentacoes = apresentacoes;
-		}
+	    public List<Apresentacao> getApresentacoes() {
+	        return apresentacoes;
+	    }
+
+	    public void setApresentacoes(List<Apresentacao> apresentacoes) {
+	        this.apresentacoes = apresentacoes;
+	    }
 		public String getNome() {
 			return nome;
 		}
@@ -53,7 +60,7 @@ public class Artista {
 
 		@Override
 		public String toString() {
-			return "[" + nome + " - apresentacoes: " + apresentacoes.size() + "]";
+			return "[" + nome + "]";
 		}
 		
 		
